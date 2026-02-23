@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>❤️</title>
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #ff4da6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: white;
+    font-size: 55px;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(255,255,255,0.6);
+}
+
+.word {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+}
+
+.word:nth-child(1) { animation-delay: 1s; }
+.word:nth-child(2) { animation-delay: 3s; }
+.word:nth-child(3) { animation-delay: 5s; }
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.heart {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 22px;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh);
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>
+<span class="word">Ich</span><br>
+<span class="word">liebe</span><br>
+<span class="word">dich</span>
+</h1>
+
+<script>
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 6000);
+}
+
+setInterval(createHeart, 300);
+</script>
+
+</body>
+</html>
