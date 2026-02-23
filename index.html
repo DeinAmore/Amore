@@ -125,49 +125,60 @@
 
         function updateTicker() {
             const now = new Date();
-            let diff = now - startBeziehung;
+            let diffMs = now - startBeziehung;
 
-            if (diff < 0) {
+            if (diffMs < 0) {
                 document.getElementById('ticker').innerHTML = "In Planung...";
                 return;
             }
 
-            // Umrechnungsfaktoren
-            const msPerSecond = 1000;
-            const msPerMinute = msPerSecond * 60;
-            const msPerHour = msPerMinute * 60;
-            const msPerDay = msPerHour * 24;
-            const msPerMonth = msPerDay * 30.436875; // Durchschnittlicher Monat
-            const msPerYear = msPerDay * 365.25;
+            // Präzise Kalenderberechnung
+            let years = now.getFullYear() - startBeziehung.getFullYear();
+            let months = now.getMonth() - startBeziehung.getMonth();
+            let days = now.getDate() - startBeziehung.getDate();
+            let hours = now.getHours() - startBeziehung.getHours();
+            let minutes = now.getMinutes() - startBeziehung.getMinutes();
+            let seconds = now.getSeconds() - startBeziehung.getSeconds();
 
-            const years = Math.floor(diff / msPerYear);
-            diff %= msPerYear;
+            // Korrektur der negativen Werte
+            if (seconds < 0) {
+                minutes--;
+                seconds += 60;
+            }
+            if (minutes < 0) {
+                hours--;
+                minutes += 60;
+            }
+            if (hours < 0) {
+                days--;
+                hours += 24;
+            }
+            if (days < 0) {
+                months--;
+                // Hole die Anzahl der Tage des VORMONATS
+                const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += lastMonth.getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
 
-            const months = Math.floor(diff / msPerMonth);
-            diff %= msPerMonth;
-
-            const days = Math.floor(diff / msPerDay);
-            diff %= msPerDay;
-
-            const h = Math.floor(diff / msPerHour);
-            diff %= msPerHour;
-
-            const m = Math.floor(diff / msPerMinute);
-            diff %= msPerMinute;
-
-            const s = Math.floor(diff / msPerSecond);
-
+            // String zusammenbauen
             let result = "";
             if (years > 0) result += `${years}<span class="unit">J.</span> `;
-            if (months > 0 || years > 0) result += `${months}<span class="unit">Mon.</span> `;
-            result += `${days}<span class="unit">Tg.</span> ${h}h ${m}m ${s}s`;
+            if (years > 0 || months > 0) result += `${months}<span class="unit">Mon.</span> `;
+            
+            result += `${days}<span class="unit">Tg.</span> ${hours}h ${minutes}m ${seconds}s`;
 
             document.getElementById('ticker').innerHTML = result;
         }
 
+        // Intervall und Initialisierung
         setInterval(updateTicker, 1000);
         updateTicker();
 
+        // --- Herz-Animationen ---
         function createSingleHeart(x, y, isAuto = false) {
             const h = document.createElement("div");
             h.className = "heart";
