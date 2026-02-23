@@ -120,32 +120,42 @@
     </div>
 
     <script>
-        // Startdatum der BEZIEHUNG (für den Ticker)
+        // Startdatum der BEZIEHUNG
         const startBeziehung = new Date('2025-12-14T15:00:00');
 
         function updateTicker() {
             const now = new Date();
-            
-            // Berechnung der Differenz in Jahren, Monaten, Tagen
-            let years = now.getFullYear() - startBeziehung.getFullYear();
-            let months = now.getMonth() - startBeziehung.getMonth();
-            let days = now.getDate() - startBeziehung.getDate();
+            let diff = now - startBeziehung;
 
-            if (days < 0) {
-                months--;
-                const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-                days += lastMonth.getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
+            if (diff < 0) {
+                document.getElementById('ticker').innerHTML = "In Planung...";
+                return;
             }
 
-            // Präzise Berechnung von h/m/s über Millisekunden (getTime())
-            const diffMs = now.getTime() - startBeziehung.getTime();
-            const h = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-            const m = Math.floor((diffMs / (1000 * 60)) % 60);
-            const s = Math.floor((diffMs / 1000) % 60);
+            // Umrechnungsfaktoren
+            const msPerSecond = 1000;
+            const msPerMinute = msPerSecond * 60;
+            const msPerHour = msPerMinute * 60;
+            const msPerDay = msPerHour * 24;
+            const msPerMonth = msPerDay * 30.436875; // Durchschnittlicher Monat
+            const msPerYear = msPerDay * 365.25;
+
+            const years = Math.floor(diff / msPerYear);
+            diff %= msPerYear;
+
+            const months = Math.floor(diff / msPerMonth);
+            diff %= msPerMonth;
+
+            const days = Math.floor(diff / msPerDay);
+            diff %= msPerDay;
+
+            const h = Math.floor(diff / msPerHour);
+            diff %= msPerHour;
+
+            const m = Math.floor(diff / msPerMinute);
+            diff %= msPerMinute;
+
+            const s = Math.floor(diff / msPerSecond);
 
             let result = "";
             if (years > 0) result += `${years}<span class="unit">J.</span> `;
@@ -171,10 +181,8 @@
             setTimeout(() => h.remove(), 6000);
         }
 
-        // Automatischer Herzregen im Hintergrund
         setInterval(() => createSingleHeart(0, 0, true), 600);
 
-        // Neue Herzen bei Klick oder Berührung
         function spawnHearts(e) {
             const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
