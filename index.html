@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -120,8 +120,8 @@
     </div>
 
     <script>
-        // KORREKTUR: Startdatum auf das Datum im Text (15.08.2025) angepasst
-        const startBeziehung = new Date('2025-08-15T00:00:00');
+        // Startdatum der BEZIEHUNG (für den Ticker)
+        const startBeziehung = new Date('2025-12-14T15:00:00');
 
         function updateTicker() {
             const now = new Date();
@@ -141,7 +141,7 @@
                 months += 12;
             }
 
-            // KORREKTUR: Saubere Berechnung von h/m/s mit getTime()
+            // Präzise Berechnung von h/m/s über Millisekunden (getTime())
             const diffMs = now.getTime() - startBeziehung.getTime();
             const h = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
             const m = Math.floor((diffMs / (1000 * 60)) % 60);
@@ -171,17 +171,19 @@
             setTimeout(() => h.remove(), 6000);
         }
 
+        // Automatischer Herzregen im Hintergrund
         setInterval(() => createSingleHeart(0, 0, true), 600);
 
+        // Neue Herzen bei Klick oder Berührung
         function spawnHearts(e) {
             const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
             for(let i=0; i<3; i++) {
                 setTimeout(() => {
-                    const offsetX = (Math.random() - 0.5) * 40;
-                    const offsetY = (Math.random() - 0.5) * 40;
+                    const offsetX = (Math.random() - 0.5) * 60;
+                    const offsetY = (Math.random() - 0.5) * 60;
                     createSingleHeart(x + offsetX, y + offsetY, false);
-                }, i * 100);
+                }, i * 80);
             }
         }
     </script>
